@@ -70,6 +70,9 @@ set(CMAKE_MACOSX_RPATH ON)
 
 enable_testing()
 
+file(GLOB_RECURSE QtDirContents "C:\\Qt\\Qt5.3.2\\5.3\\*")
+message("QtDir contents: ${QtDirContents}")
+
 find_package(Qt5Quick 5.3.0 REQUIRED)
 
 if(DEFINED Boost_INCLUDE_DIR)

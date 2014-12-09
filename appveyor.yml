@@ -1,0 +1,19 @@
+clone_depth: 50
+os: unstable
+
+environment:
+    matrix:
+        - CONFIGURATION: Debug
+        - CONFIGURATION: Release
+install:
+  - set PATH=%PATH%;C:\Qt\Qt5.3.2\5.3\msvc2013\bin
+  - git clone https://chromium.googlesource.com/external/googletest.git C:\projects\googletest
+
+build_script:
+    - mkdir build && cd build
+    - cmake .. -DCMAKE_PREFIX_PATH=C:\Qt\Qt5.3.2\5.3\msvc2013 -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DGTEST_SOURCE=C:\projects\googletest -DBoost_INCLUDE_DIR=C:\Libraries\boost\include
+    - cmake --build .
+
+test_script:
+    - ctest -V
+    - qmlscene --quit -I ../qml ../examples/TestApp.qml
