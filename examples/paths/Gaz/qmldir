@@ -1,0 +1,5 @@
+module Gaz
+
+Quux 1.0 Quux.qml
+Foo 1.0 Foo.qml
+Bar 1.0 Bar.qml
