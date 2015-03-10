@@ -26,3 +26,15 @@ Run:
 ```
 
 For the last two cases You should see no info message.
+
+
+The last example
+
+```
+  $ qmlscene -I qml -I examples/hierarchy-changes examples/hierarchy-changes/Items.qml
+```
+
+demonstrates that changing the visual hierarchy (i.e. re-setting the parent)
+of an item will re-evaluate the attached style rules.  After start you
+should see a nice big "one", clicking on the window should change the
+display to "two".

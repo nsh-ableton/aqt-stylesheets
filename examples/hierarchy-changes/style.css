@@ -23,3 +23,11 @@ THE SOFTWARE.
 Bar, QObject, .root {
   text: "B";
 }
+
+.one .foo {
+  text: "one"
+}
+
+.two .foo {
+  text: "two"
+}
