@@ -31,6 +31,7 @@ THE SOFTWARE.
 SUPPRESS_WARNINGS
 #include <QtGui/QFont>
 #include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickWindow>
 #include <QtQml/QQmlEngine>
 RESTORE_WARNINGS
 
@@ -87,17 +88,32 @@ std::vector<std::string> styleClassName(QObject* pObj)
 template <typename T, typename ObjVisitor>
 T traverseParentChain(QObject* pObj, ObjVisitor visitor)
 {
+  static const std::string sQuickFlickableClassName = "QQuickFlickable";
   QObject* p = pObj;
   while (p) {
     if (visitor(p)) {
-      QObject* nextp = p->parent();
-      if (!nextp) {
-        if (QQuickItem* pItem = qobject_cast<QQuickItem*>(p)) {
-          if (QQuickItem* pParentItem = pItem->parentItem()) {
-            nextp = pParentItem;
-          }
+      QObject* nextp = nullptr;
+      QObject* pParent = p->parent();
+
+      if (pParent && qobject_cast<QQuickWindow*>(pParent)) {
+        nextp = pParent;
+      } else if (QQuickItem* pItem = qobject_cast<QQuickItem*>(p)) {
+        QObject* pItemParent = pItem->parentItem();
+        nextp = pItemParent;
+
+        QObject* pGrandParent = pItemParent ? pItemParent->parent() : nullptr;
+
+        if (pGrandParent && typeName(pGrandParent) == sQuickFlickableClassName) {
+          // flickables have a QQuickItem as contentItem between flickable
+          // and children, let's skip this
+          nextp = pGrandParent;
         }
       }
+
+      if (!nextp) {
+        nextp = pParent;
+      }
+
       p = nextp;
     } else {
       p = nullptr;
