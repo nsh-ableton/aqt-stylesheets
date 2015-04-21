@@ -11,3 +11,11 @@ Bar, QObject.foo, .root {
 .setnmFoo2 .setnmBar {
     height: 200;
 }
+
+.fourth {
+    text: 'la';
+}
+
+.setnmFoo2 .setnmBar .third .forth {
+    text: 'xyz';
+}

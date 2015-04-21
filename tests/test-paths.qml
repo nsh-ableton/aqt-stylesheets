@@ -155,6 +155,7 @@ Item {
             id: root
 
             property alias itemHeight: bar.height
+            property alias bar: bar
 
             property var foo: Item {
                 id: foo
@@ -185,6 +186,69 @@ Item {
 
                 comp.foo.StyleSet.name = "setnmFoo2"
                 compare(comp.itemHeight, 200);
+            });
+            compare(spy.count, 0);
+        }
+    }
+
+    //--------------------------------------------------------------------------
+
+    Component {
+        id: changeParentCase
+
+        ApplicationWindow {
+            id: root
+
+            property alias bar: bar
+
+            Item {
+                id: foo
+                StyleSet.name: "setnmFoo"
+
+                Flickable {
+                    id: bar
+                }
+            }
+        }
+    }
+
+    Component {
+        id: addItem
+
+        Rectangle {
+            id: gaz
+            StyleSet.name: "third"
+
+            property alias textValue: mow.text
+            property alias mow: mow
+
+            Text {
+                id: mow
+                StyleSet.name: "fourth"
+                text: mow.StyleSet.props.string("text")
+            }
+        }
+    }
+
+    TestCase {
+        name: "StyleSet.paths are reevaluated when parent changes"
+        when: windowShown
+
+        function test_reparentItem() {
+            compare(spy.count, 0);
+            AqtTests.Utils.withComponent(changeParentCase, scene, {}, function(parentComp) {
+              AqtTests.Utils.withComponent(addItem, parentComp.bar.contentItem, {}, function(comp) {
+                compare(comp.textValue, 'la');
+
+                console.log("======================================================");
+                comp.parent = parentComp.bar.contentItem;
+//                parentComp.bar.children = [comp];
+                console.log("======================================================");
+                console.log(comp.mow.StyleSet.path);
+                console.log("--------------------------------------------------------------->");
+
+                compare(comp.textValue, 'xyz');
+              });
             });
             compare(spy.count, 0);
         }
